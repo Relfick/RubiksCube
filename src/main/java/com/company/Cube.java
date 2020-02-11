@@ -24,38 +24,45 @@ public class Cube {
         this.sides[side].matrSquares[i][j] = color;
     }
 
-    void turnCubeToTheRight() {
-        Side temp = sides[3];
-        for (int i = 3; i > 0; i--)
-            sides[i] = sides[i - 1];
-        sides[0] = temp;
-        TurnTheFace(4, 1);
-        TurnTheFace(5, 0);
-    }
-
-    void turnCubeToTheLeft() {
-        Side temp = sides[0];
-        for (int i = 0; i < 3; i++)
-            sides[i] = sides[(i + 1) % 4];
-        sides[3] = temp;
-        TurnTheFace(4, 0);
-        TurnTheFace(5, 1);
-    }
-
-    void turnCubeToTheUp() {
-        Side temp = sides[3];
-        for (int i = 3; i > 0; i--)
-            sides[i] = sides[i - 1];
-        sides[0] = temp;
-        // добавить поворот верхней и нижней
-    }
-
-    void turnCubeToTheDown() {
-        Side temp = sides[3];
-        for (int i = 3; i > 0; i--)
-            sides[i] = sides[i - 1];
-        sides[0] = temp;
-        // добавить поворот верхней и нижней
+    // direction: 0-Up, 1-Down, 2-Left, 3-Right
+    void turnTheCube(int direction) {
+        Side temp;
+        switch (direction) {
+            case 0:
+                temp = sides[0];
+                sides[0] = sides[5];
+                sides[5] = sides[2];
+                sides[2] = sides[4];
+                sides[4] = temp;
+                TurnTheFace(1, 0);
+                TurnTheFace(3, 1);
+                break;
+            case 1:
+                temp = sides[0];
+                sides[0] = sides[4];
+                sides[4] = sides[2];
+                sides[2] = sides[5];
+                sides[5] = temp;
+                TurnTheFace(1, 1);
+                TurnTheFace(3, 0);
+                break;
+            case 2:
+                temp = sides[0];
+                for (int i = 0; i < 3; i++)
+                    sides[i] = sides[(i + 1) % 4];
+                sides[3] = temp;
+                TurnTheFace(4, 0);
+                TurnTheFace(5, 1);
+                break;
+            case 3:
+                temp = sides[3];
+                for (int i = 3; i > 0; i--)
+                    sides[i] = sides[i - 1];
+                sides[0] = temp;
+                TurnTheFace(4, 1);
+                TurnTheFace(5, 0);
+                break;
+        }
     }
 
     //direction: 0 - clockwise, 1 - counterclockwise
