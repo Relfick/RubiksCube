@@ -2,12 +2,14 @@ package com.company;
 
 public class Cube {
     Side[] sides;
-    Cube() {
+    int size;
+    Cube(int size) {
         sides = new Side[6];
         for (int i = 0; i < 6; i++) {
-            sides[i] = new Side();
+            sides[i] = new Side(size);
             sides[i].solveTheSide(i); // инициализируем куб в собранном состоянии
         }
+        this.size = size;
     }
 
     void showTheStatus() {
@@ -18,12 +20,17 @@ public class Cube {
         }
     }
 
+    void ChangeTheSquare(int side, int i, int j, int color) {
+        this.sides[side].matrSquares[i][j] = color;
+    }
+
     void turnCubeToTheRight() {
         Side temp = sides[3];
         for (int i = 3; i > 0; i--)
             sides[i] = sides[i - 1];
         sides[0] = temp;
-        // добавить поворот верхней и нижней
+        TurnTheFace(4, 1);
+        TurnTheFace(5, 0);
     }
 
     void turnCubeToTheLeft() {
@@ -31,26 +38,56 @@ public class Cube {
         for (int i = 0; i < 3; i++)
             sides[i] = sides[(i + 1) % 4];
         sides[3] = temp;
+        TurnTheFace(4, 0);
+        TurnTheFace(5, 1);
+    }
+
+    void turnCubeToTheUp() {
+        Side temp = sides[3];
+        for (int i = 3; i > 0; i--)
+            sides[i] = sides[i - 1];
+        sides[0] = temp;
         // добавить поворот верхней и нижней
     }
 
-    void R() { // поворот по часовой стрелке правой грани
-        for (int i = 0; i < 8; i++)
-            sides[1].squares[i] = sides[1].squares[(i + 6) % 8];
-
-        int[] temp = new int[] {sides[4].squares[2], sides[4].squares[3], sides[4].squares[4]};
-
-        for (int i = 2; i < 5; i++)
-            sides[4].squares[i] = sides[0].squares[i];
-        for (int i = 2; i < 5; i++)
-            sides[0].squares[i] = sides[5].squares[i];
-        for (int i = 2; i < 5; i++)
-            sides[5].squares[i] = sides[2].squares[i];
-        for (int i = 2; i < 5; i++)
-            sides[2].squares[i] = temp[i-2];
+    void turnCubeToTheDown() {
+        Side temp = sides[3];
+        for (int i = 3; i > 0; i--)
+            sides[i] = sides[i - 1];
+        sides[0] = temp;
+        // добавить поворот верхней и нижней
     }
 
-    void Rinv() {
-        // Сделать
+    //direction: 0 - clockwise, 1 - counterclockwise
+    private void TurnTheFace(int side, int direction) {
+        int tmp;
+        if (direction == 0) {
+            for (int i = 0; i < size / 2; i++)
+                for (int j = i; j < size - 1 - i; j++) {
+                    tmp = this.sides[side].matrSquares[i][j];
+                    this.sides[side].matrSquares[i][j] = this.sides[side].matrSquares[size - j - 1][i];
+                    this.sides[side].matrSquares[size - j - 1][i] = this.sides[side].matrSquares[size - i - 1][size - j - 1];
+                    this.sides[side].matrSquares[size - i - 1][size - j - 1] = this.sides[side].matrSquares[j][size - i - 1];
+                    this.sides[side].matrSquares[j][size - i - 1] = tmp;
+                }
+        }
+        else {
+            for (int i = 0; i < size / 2; i++)
+                for (int j = i; j < size - 1 - i; j++) {
+                    tmp = this.sides[side].matrSquares[i][j];
+                    this.sides[side].matrSquares[i][j] = this.sides[side].matrSquares[j][size-1-i];
+                    this.sides[side].matrSquares[j][size-1-i] = this.sides[side].matrSquares[size-1-i][size-1-j];
+                    this.sides[side].matrSquares[size-1-i][size-1-j] = this.sides[side].matrSquares[size-1-j][i];
+                    this.sides[side].matrSquares[size-1-j][i] = tmp;
+                }
+        }
     }
+
+    // axis: x, y, z - 0, 1, 2
+    // side: 0 - (size-1), count from left
+    // view against the axis, 0 - clockwise, 1 - counterclockwise
+    void TurnTheSide(int axis, int side, int direction) {
+
+    }
+
 }
