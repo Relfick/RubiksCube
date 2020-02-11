@@ -7,7 +7,7 @@ public class Cube {
         sides = new Side[6];
         for (int i = 0; i < 6; i++) {
             sides[i] = new Side(size);
-            sides[i].solveTheSide(i); // инициализируем куб в собранном состоянии
+            sides[i].solveTheSide(i); // initialize the solved cube
         }
         this.size = size;
     }
@@ -20,8 +20,9 @@ public class Cube {
         }
     }
 
+    // for my tests
     void ChangeTheSquare(int side, int i, int j, int color) {
-        this.sides[side].matrSquares[i][j] = color;
+        this.sides[side].squares[i][j] = color;
     }
 
     // direction: 0-Up, 1-Down, 2-Left, 3-Right
@@ -56,8 +57,7 @@ public class Cube {
                 break;
             case 3:
                 temp = sides[3];
-                for (int i = 3; i > 0; i--)
-                    sides[i] = sides[i - 1];
+                System.arraycopy(sides, 0, sides, 1, 3);
                 sides[0] = temp;
                 TurnTheFace(4, 1);
                 TurnTheFace(5, 0);
@@ -71,21 +71,21 @@ public class Cube {
         if (direction == 0) {
             for (int i = 0; i < size / 2; i++)
                 for (int j = i; j < size - 1 - i; j++) {
-                    tmp = this.sides[side].matrSquares[i][j];
-                    this.sides[side].matrSquares[i][j] = this.sides[side].matrSquares[size - j - 1][i];
-                    this.sides[side].matrSquares[size - j - 1][i] = this.sides[side].matrSquares[size - i - 1][size - j - 1];
-                    this.sides[side].matrSquares[size - i - 1][size - j - 1] = this.sides[side].matrSquares[j][size - i - 1];
-                    this.sides[side].matrSquares[j][size - i - 1] = tmp;
+                    tmp = this.sides[side].squares[i][j];
+                    this.sides[side].squares[i][j] = this.sides[side].squares[size - j - 1][i];
+                    this.sides[side].squares[size - j - 1][i] = this.sides[side].squares[size - i - 1][size - j - 1];
+                    this.sides[side].squares[size - i - 1][size - j - 1] = this.sides[side].squares[j][size - i - 1];
+                    this.sides[side].squares[j][size - i - 1] = tmp;
                 }
         }
         else {
             for (int i = 0; i < size / 2; i++)
                 for (int j = i; j < size - 1 - i; j++) {
-                    tmp = this.sides[side].matrSquares[i][j];
-                    this.sides[side].matrSquares[i][j] = this.sides[side].matrSquares[j][size-1-i];
-                    this.sides[side].matrSquares[j][size-1-i] = this.sides[side].matrSquares[size-1-i][size-1-j];
-                    this.sides[side].matrSquares[size-1-i][size-1-j] = this.sides[side].matrSquares[size-1-j][i];
-                    this.sides[side].matrSquares[size-1-j][i] = tmp;
+                    tmp = this.sides[side].squares[i][j];
+                    this.sides[side].squares[i][j] = this.sides[side].squares[j][size-1-i];
+                    this.sides[side].squares[j][size-1-i] = this.sides[side].squares[size-1-i][size-1-j];
+                    this.sides[side].squares[size-1-i][size-1-j] = this.sides[side].squares[size-1-j][i];
+                    this.sides[side].squares[size-1-j][i] = tmp;
                 }
         }
     }
