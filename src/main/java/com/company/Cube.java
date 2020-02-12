@@ -1,9 +1,35 @@
 package com.company;
+import java.util.Random;
 
 public class Cube {
-    Side[] sides;
-    int size;
+    private static class Side {
+        int[][] squares;
+        int size;
+        Side(int size) {
+            squares = new int[size][size];
+            this.size = size;
+        }
+
+        void solveTheSide(int color) {
+            for (int i = 0; i < size; i++)
+                for (int j = 0; j < size; j++)
+                    squares[i][j] = color;
+        }
+
+        void showTheSide() {
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    System.out.print(squares[i][j] + " ");
+                }
+                System.out.print('\n');
+            }
+        }
+    }
+
+    private Side[] sides;
+    private int size;
     Cube(int size) {
+        if (size < 1) throw new IllegalArgumentException("Dimension must be > 1");
         sides = new Side[6];
         for (int i = 0; i < 6; i++) {
             sides[i] = new Side(size);
@@ -149,7 +175,9 @@ public class Cube {
     // axis: y-0, x-1, z-2 (origin - back side, the bottom left square; y - front, to you; x - right; z - up)
     // layer: 0 - (size-1), count from origin
     // direction: 0 - clockwise, 1 - counterclockwise; (view against the axis)
-    void TurnTheSide(int axis, int layer, int direction) {
+    private void TurnTheSide(int axis, int layer, int direction) {
+        if (layer < 0 || layer >= size || direction < 0 || direction > 1)
+            throw new IllegalArgumentException("The wrong option");
         if (axis == 2) {
             if (direction == 1) TurnFrontLayerToRight(size - layer - 1);
             else TurnFrontLayerToLeft(size - layer - 1);
@@ -165,6 +193,25 @@ public class Cube {
                 if (direction == 0) TurnFrontLayerToRight(layer);
                 else TurnFrontLayerToLeft(layer);
                 TurnTheCube(0); // Up
+        }
+    }
+
+    // for several rotations at a time
+    void TurnSides(int axis, int[] layers, int[] directions) {
+        if ((layers.length != directions.length) || layers.length == 0)
+            throw new IllegalArgumentException("Dimensions must be equal and > 0");
+        for (int i = 0; i < layers.length; i++) TurnTheSide(axis, layers[i], directions[i]);
+    }
+
+    //for one rotation
+    void TurnSides(int axis, int layer, int direction) {
+        TurnTheSide(axis, layer, direction);
+    }
+
+    void SetRandomState() {
+        int numTurns = 20;
+        for (int i = 0; i < numTurns; i++) {
+            TurnSides(new Random().nextInt(3), new Random().nextInt(size), new Random().nextInt(2));
         }
     }
 }
