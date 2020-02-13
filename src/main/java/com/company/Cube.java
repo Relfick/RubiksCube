@@ -16,6 +16,11 @@ public class Cube {
                     squares[i][j] = color;
         }
 
+        void set(int[][] side) {
+            for (int i = 0; i < size; i++)
+                System.arraycopy(side[i], 0, this.squares[i], 0, size);
+        }
+
         void showTheSide() {
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
@@ -23,6 +28,10 @@ public class Cube {
                 }
                 System.out.print('\n');
             }
+        }
+
+        int[][] get() {
+            return squares;
         }
     }
 
@@ -38,7 +47,7 @@ public class Cube {
         this.size = size;
     }
 
-    void showTheStatus() {
+    void ShowTheStatus() {
         for (int i = 0; i < 6; i++) {
             System.out.println("Сторона " + i);
             sides[i].showTheSide();
@@ -46,9 +55,23 @@ public class Cube {
         }
     }
 
-    // for tests
-    void ChangeTheSquare(int side, int i, int j, int color) {
-        this.sides[side].squares[i][j] = color;
+    int[][] GetTheSide(int numSide) {
+        if (numSide < 0 || numSide > 5) throw new IllegalArgumentException("The wrong number of side");
+        return this.sides[numSide].get();
+    }
+
+    void SetTheSide(int[][] side, int numSide) {
+        if (numSide < 0 || numSide > 5) throw new IllegalArgumentException("The wrong side");
+        for (int[] row : side) if (side.length != row.length) throw new IllegalArgumentException("Not a cube");
+        for (int i = 0; i < size; i++)
+            for(int j = 0; j < size; j++)
+                if (side[i][j] < 0 || side[i][j] > 5) throw new IllegalArgumentException("The wrong color");
+        this.sides[numSide].set(side);
+    }
+
+    void SolveTheSide(int color, int numSide) {
+        if (numSide < 0 || numSide > 5 || color < 0 || color > 5) throw new IllegalArgumentException("The wrong side/color");
+        this.sides[numSide].solveTheSide(color);
     }
 
     // direction: 0-Up, 1-Down, 2-Left, 3-Right, 4-clockwise, 5-counterclockwise
