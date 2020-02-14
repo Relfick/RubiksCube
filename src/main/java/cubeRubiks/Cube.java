@@ -1,4 +1,4 @@
-package com.company;
+package cubeRubiks;
 import java.util.Random;
 
 public class Cube {
@@ -47,7 +47,7 @@ public class Cube {
         this.size = size;
     }
 
-    void ShowTheStatus() {
+    void showTheStatus() {
         for (int i = 0; i < 6; i++) {
             System.out.println("Сторона " + i);
             sides[i].showTheSide();
@@ -55,12 +55,12 @@ public class Cube {
         }
     }
 
-    int[][] GetTheSide(int numSide) {
+    int[][] getTheSide(int numSide) {
         if (numSide < 0 || numSide > 5) throw new IllegalArgumentException("The wrong number of side");
         return this.sides[numSide].get();
     }
 
-    void SetTheSide(int[][] side, int numSide) {
+    void setTheSide(int[][] side, int numSide) {
         if (numSide < 0 || numSide > 5) throw new IllegalArgumentException("The wrong side");
         for (int[] row : side) if (side.length != row.length) throw new IllegalArgumentException("Not a cube");
         for (int i = 0; i < size; i++)
@@ -69,79 +69,79 @@ public class Cube {
         this.sides[numSide].set(side);
     }
 
-    void SolveTheSide(int color, int numSide) {
+    void solveTheSide(int color, int numSide) {
         if (numSide < 0 || numSide > 5 || color < 0 || color > 5) throw new IllegalArgumentException("The wrong side/color");
         this.sides[numSide].solveTheSide(color);
     }
 
     // direction: 0-Up, 1-Down, 2-Left, 3-Right, 4-clockwise, 5-counterclockwise
-    void TurnTheCube(int direction) {
+    void turnTheCube(int direction) {
         Side temp;
         switch (direction) {
             case 0:
                 temp = sides[0];
                 sides[0] = sides[5];
                 sides[5] = sides[2];
-                TurnTheFace(5, 0);
-                TurnTheFace(5, 0);
+                turnTheFace(5, false);
+                turnTheFace(5, false);
                 sides[2] = sides[4];
-                TurnTheFace(2, 0);
-                TurnTheFace(2, 0);
+                turnTheFace(2, false);
+                turnTheFace(2, false);
                 sides[4] = temp;
-                TurnTheFace(1, 0);
-                TurnTheFace(3, 1);
+                turnTheFace(1, false);
+                turnTheFace(3, true);
                 break;
             case 1:
                 temp = sides[0];
                 sides[0] = sides[4];
                 sides[4] = sides[2];
-                TurnTheFace(4, 0);
-                TurnTheFace(4, 0);
+                turnTheFace(4, false);
+                turnTheFace(4, false);
                 sides[2] = sides[5];
-                TurnTheFace(2, 0);
-                TurnTheFace(2, 0);
+                turnTheFace(2, false);
+                turnTheFace(2, false);
                 sides[5] = temp;
-                TurnTheFace(1, 1);
-                TurnTheFace(3, 0);
+                turnTheFace(1, true);
+                turnTheFace(3, false);
                 break;
             case 2:
                 temp = sides[0];
                 System.arraycopy(sides, 1, sides, 0, 3);
                 sides[3] = temp;
-                TurnTheFace(4, 0);
-                TurnTheFace(5, 1);
+                turnTheFace(4, false);
+                turnTheFace(5, true);
                 break;
             case 3:
                 temp = sides[3];
                 System.arraycopy(sides, 0, sides, 1, 3);
                 sides[0] = temp;
-                TurnTheFace(4, 1);
-                TurnTheFace(5, 0);
+                turnTheFace(4, true);
+                turnTheFace(5, false);
                 break;
             case 4:
                 temp = sides[1];
-                sides[1] = sides[4]; TurnTheFace(1, 0);
-                sides[4] = sides[3]; TurnTheFace(4, 0);
-                sides[3] = sides[5]; TurnTheFace(3, 0);
-                sides[5] = temp; TurnTheFace(5, 0);
-                TurnTheFace(0, 0);
-                TurnTheFace(2, 1);
+                sides[1] = sides[4]; turnTheFace(1, false);
+                sides[4] = sides[3]; turnTheFace(4, false);
+                sides[3] = sides[5]; turnTheFace(3, false);
+                sides[5] = temp; turnTheFace(5, false);
+                turnTheFace(0, false);
+                turnTheFace(2, true);
                 break;
             case 5:
                 temp = sides[1];
-                sides[1] = sides[5]; TurnTheFace(1, 1);
-                sides[5] = sides[3]; TurnTheFace(5, 1);
-                sides[3] = sides[4]; TurnTheFace(4, 1);
-                sides[4] = temp; TurnTheFace(4, 1);
-                TurnTheFace(0, 1);
-                TurnTheFace(2, 0);
+                sides[1] = sides[5]; turnTheFace(1, true);
+                sides[5] = sides[3]; turnTheFace(5, true);
+                sides[3] = sides[4]; turnTheFace(4, true);
+                sides[4] = temp; turnTheFace(4, true);
+                turnTheFace(0, true);
+                turnTheFace(2, false);
         }
     }
 
     //direction: 0 - clockwise, 1 - counterclockwise
-    private void TurnTheFace(int side, int direction) {
+    private void turnTheFace(int side, boolean direction) {
         int tmp;
-        if (direction == 0) {
+        if (!direction) {
             for (int i = 0; i < size / 2; i++)
                 for (int j = i; j < size - 1 - i; j++) {
                     tmp = this.sides[side].squares[i][j];
@@ -163,7 +163,7 @@ public class Cube {
         }
     }
 
-    private void TurnFrontLayerToRight(int layer) {
+    private void turnFrontLayerToRight(int layer) {
         int[] temp = new int[size];
         for (int i = 0; i < size; i++)
             temp[i] = sides[3].squares[layer][i]; // создали temp слоя грани 3
@@ -175,11 +175,11 @@ public class Cube {
         for (int i = 0; i < size; i++)
             sides[0].squares[layer][i] = temp[i];
 
-        if (layer == 0) TurnTheFace(4, 1);
-        if (layer == size - 1) TurnTheFace(5, 0);
+        if (layer == 0) turnTheFace(4, true);
+        if (layer == size - 1) turnTheFace(5, false);
     }
 
-    private void TurnFrontLayerToLeft(int layer) {
+    private void turnFrontLayerToLeft(int layer) {
         int[] temp = new int[size];
         for (int i = 0; i < size; i++)
             temp[i] = sides[0].squares[layer][i]; // создали temp слоя грани 0
@@ -191,50 +191,50 @@ public class Cube {
         for (int i = 0; i < size; i++)
             sides[3].squares[layer][i] = temp[i];
 
-        if (layer == 0) TurnTheFace(4, 0);
-        if (layer == size - 1) TurnTheFace(5, 1);
+        if (layer == 0) turnTheFace(4, false);
+        if (layer == size - 1) turnTheFace(5, true);
     }
 
     // axis: y-0, x-1, z-2 (origin - back side, the bottom left square; y - front, to you; x - right; z - up)
     // layer: 0 - (size-1), count from origin
     // direction: 0 - clockwise, 1 - counterclockwise; (view against the axis)
-    private void TurnTheSide(int axis, int layer, int direction) {
+    private void turnTheSide(int axis, int layer, int direction) {
         if (layer < 0 || layer >= size || direction < 0 || direction > 1)
             throw new IllegalArgumentException("The wrong option");
         if (axis == 2) {
-            if (direction == 1) TurnFrontLayerToRight(size - layer - 1);
-            else TurnFrontLayerToLeft(size - layer - 1);
+            if (direction == 1) turnFrontLayerToRight(size - layer - 1);
+            else turnFrontLayerToLeft(size - layer - 1);
         }
         else if (axis == 1)  {
-                TurnTheCube(4); // Clockwise
-                if (direction == 0) TurnFrontLayerToRight(layer);
-                else TurnFrontLayerToLeft(layer);
-                TurnTheCube(5); // CounterClockwise
+                turnTheCube(4); // Clockwise
+                if (direction == 0) turnFrontLayerToRight(layer);
+                else turnFrontLayerToLeft(layer);
+                turnTheCube(5); // CounterClockwise
         }
         else if (axis == 0) {
-                TurnTheCube(1); // Down
-                if (direction == 0) TurnFrontLayerToRight(layer);
-                else TurnFrontLayerToLeft(layer);
-                TurnTheCube(0); // Up
+                turnTheCube(1); // Down
+                if (direction == 0) turnFrontLayerToRight(layer);
+                else turnFrontLayerToLeft(layer);
+                turnTheCube(0); // Up
         }
     }
 
     // for several rotations at a time
-    void TurnSides(int axis, int[] layers, int[] directions) {
+    void turnSides(int axis, int[] layers, int[] directions) {
         if ((layers.length != directions.length) || layers.length == 0)
             throw new IllegalArgumentException("Dimensions must be equal and > 0");
-        for (int i = 0; i < layers.length; i++) TurnTheSide(axis, layers[i], directions[i]);
+        for (int i = 0; i < layers.length; i++) turnTheSide(axis, layers[i], directions[i]);
     }
 
     //for one rotation
-    void TurnSides(int axis, int layer, int direction) {
-        TurnTheSide(axis, layer, direction);
+    void turnSides(int axis, int layer, int direction) {
+        turnTheSide(axis, layer, direction);
     }
 
-    void SetRandomState() {
+    void setRandomState() {
         int numTurns = 20;
         for (int i = 0; i < numTurns; i++) {
-            TurnSides(new Random().nextInt(3), new Random().nextInt(size), new Random().nextInt(2));
+            turnSides(new Random().nextInt(3), new Random().nextInt(size), new Random().nextInt(2));
         }
     }
 }
