@@ -74,67 +74,44 @@ public class Cube {
         this.sides[numSide].solveTheSide(color);
     }
 
+    private void swapTheFaces(int[] faces) {
+        Side temp = sides[faces[0]];
+        for (int i = 0; i < 3; i++)
+            sides[faces[i]] = sides[faces[i+1]];
+        sides[faces[3]] = temp;
+    }
+
+    private void turnTheFaces(int[] faces, boolean[] directions) {
+        for (int i = 0; i < faces.length; i++)
+            turnTheFace(faces[i], directions[i]);
+    }
+
     // direction: 0-Up, 1-Down, 2-Left, 3-Right, 4-clockwise, 5-counterclockwise
     void turnTheCube(int direction) {
-        Side temp;
         switch (direction) {
             case 0:
-                temp = sides[0];
-                sides[0] = sides[5];
-                sides[5] = sides[2];
-                turnTheFace(5, false);
-                turnTheFace(5, false);
-                sides[2] = sides[4];
-                turnTheFace(2, false);
-                turnTheFace(2, false);
-                sides[4] = temp;
-                turnTheFace(1, false);
-                turnTheFace(3, true);
+                swapTheFaces(new int[] {0, 5, 2, 4});
+                turnTheFaces(new int[] {5, 5, 2, 2, 1, 3}, new boolean[] {false, false, false, false, false, true});
                 break;
             case 1:
-                temp = sides[0];
-                sides[0] = sides[4];
-                sides[4] = sides[2];
-                turnTheFace(4, false);
-                turnTheFace(4, false);
-                sides[2] = sides[5];
-                turnTheFace(2, false);
-                turnTheFace(2, false);
-                sides[5] = temp;
-                turnTheFace(1, true);
-                turnTheFace(3, false);
+                swapTheFaces(new int[] {0, 4, 2, 5});
+                turnTheFaces(new int[] {4, 4, 2, 2, 1, 3}, new boolean[] {false, false, false, false, true, false});
                 break;
             case 2:
-                temp = sides[0];
-                System.arraycopy(sides, 1, sides, 0, 3);
-                sides[3] = temp;
-                turnTheFace(4, false);
-                turnTheFace(5, true);
+                swapTheFaces(new int[] {0, 1, 2, 3});
+                turnTheFaces(new int[] {4, 5}, new boolean[] {false, true});
                 break;
             case 3:
-                temp = sides[3];
-                System.arraycopy(sides, 0, sides, 1, 3);
-                sides[0] = temp;
-                turnTheFace(4, true);
-                turnTheFace(5, false);
+                swapTheFaces(new int[] {3, 2, 1, 0});
+                turnTheFaces(new int[] {4, 5}, new boolean[] {true, false});
                 break;
             case 4:
-                temp = sides[1];
-                sides[1] = sides[4]; turnTheFace(1, false);
-                sides[4] = sides[3]; turnTheFace(4, false);
-                sides[3] = sides[5]; turnTheFace(3, false);
-                sides[5] = temp; turnTheFace(5, false);
-                turnTheFace(0, false);
-                turnTheFace(2, true);
+                swapTheFaces(new int[] {1, 4, 3, 5});
+                turnTheFaces(new int[] {1, 4, 3, 5, 0, 2}, new boolean[] {false, false, false, false, false, true});
                 break;
             case 5:
-                temp = sides[1];
-                sides[1] = sides[5]; turnTheFace(1, true);
-                sides[5] = sides[3]; turnTheFace(5, true);
-                sides[3] = sides[4]; turnTheFace(4, true);
-                sides[4] = temp; turnTheFace(4, true);
-                turnTheFace(0, true);
-                turnTheFace(2, false);
+                swapTheFaces(new int[] {1, 5, 3, 4});
+                turnTheFaces(new int[] {1, 5, 3, 4, 0, 2}, new boolean[] {true, true, true, true, true, false});
         }
     }
 
