@@ -112,6 +112,7 @@ public class Cube {
             case 5:
                 swapTheFaces(new int[] {1, 5, 3, 4});
                 turnTheFaces(new int[] {1, 5, 3, 4, 0, 2}, new boolean[] {true, true, true, true, true, false});
+                break;
         }
     }
 
